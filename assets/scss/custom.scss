@@ -1,0 +1,155 @@
+// custom.scss
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700,900&display=swap');
+// All of your custom SCSS variables go first
+$font-family-sans-serif: 'Montserrat', sans-serif;
+$primary: #467fd0;
+$success: #20c997;
+$danger: #df4759;
+$warning: #fd9644;
+$info: 	#17a2b8;
+$dark: #161c2d;
+$light: #fff;
+$dark-light: #fbfbfd;
+$body: #eaeaea;
+$footer-name: #343a40;
+$footer-text: #868e96;
+//then bootstrap & bootstrap-vue should be added after
+//so that they inherit the custom SCSS variables
+@import 'bootstrap/scss/bootstrap.scss';
+@import 'bootstrap-vue/src/index.scss';
+@import "~noty/src/noty.scss";
+@import "~noty/src/themes/mint.scss";
+
+//all other custom scss files or css should be added here
+body {
+  background-color: $body;
+
+  .input-group > .input-group-prepend > .btn,
+  .input-group > .input-group-prepend > .input-group-text,
+  .input-group > .input-group-append:not(:last-child) > .btn,
+  .input-group > .input-group-append:not(:last-child) > .input-group-text,
+  .input-group > .input-group-append:last-child > .btn:not(:last-child):not(.dropdown-toggle),
+  .input-group > .input-group-append:last-child > .input-group-text:not(:last-child) {
+    background-color: transparent !important;
+  }
+
+  .GMap__Wrapper {
+    height: 450px !important;
+  }
+
+  .pagination {
+
+    .page-item {
+
+      &.active {
+
+        .page-link {
+          color: #fff;
+          background-color: #6c757d;
+          border-color: #6c757d;
+        }
+      }
+
+      .page-link {
+        color: #6c757d;
+      }
+    }
+  }
+}
+
+.outter-wrapper {
+
+  .section-wrapper {
+    position: relative;
+    z-index: 1021;
+    padding: 80px 0;
+
+    &.bg-white {
+      background-color: $light;
+    }
+
+    &.bg-dark-white {
+      background-color: $dark-light;
+    }
+
+    .sect-header {
+      font-size: 54px;
+      font-weight: bold;
+      line-height: 70px;
+      color: #463853;
+      margin-bottom: 30px;
+    }
+
+    .sect-text {
+      font-size: 30px;
+      font-weight: 600;
+      line-height: 40px;
+      color: #998DA0;
+      margin-bottom: 30px;
+    }
+  }
+}
+
+.footer {
+  padding: 80px 0;
+  background-color: $light;
+
+  .footer-logo {
+    width: 56px;
+    height: 56px;
+  }
+
+  .text-brand {
+    display: inline-block;
+    margin-top: 5px;
+
+    .name {
+      font-size: 20px;
+      font-weight: 600;
+      color: $footer-name;
+      margin: 0;
+      margin-bottom: 10px;
+    }
+
+    .text {
+      font-size: 16px;
+      font-weight: 600;
+      color: $footer-text;
+      margin: 0;
+    }
+  }
+
+  .text-footer {
+    font-size: 16px;
+    font-weight: 600;
+    color: $footer-text;
+    line-height: 25px;
+  }
+
+  .cpyr-footer {
+    font-size: 16px;
+    font-weight: 600;
+    color: $footer-text;
+  }
+
+  .menu-title {
+    font-size: 19px;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+    color: $footer-name;
+  }
+
+  .nav-footer {
+
+    .nav-item {
+      margin-bottom: 10px;
+
+      .nav-link {
+        padding: 0;
+        font-size: 16px;
+        font-weight: 600;
+        color: $footer-text;
+      }
+    }
+  }
+}
