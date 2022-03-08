@@ -1,6 +1,6 @@
 <template>
   <fragment>
-    <h2 class="text-center font-weight-bold text-secondary">Register</h2>
+    <h2 class="page-form-header-top">Register</h2>
     <ValidationObserver ref="form">
       <b-form @submit.prevent="handleCreateUser">
         <b-form-group
@@ -64,7 +64,7 @@
             v-slot="{ errors }"
             name="password"
             type="password"
-            rules="required|min:6|password:@confirm"
+            rules="required|min:8|password:@confirm"
           >
             <b-form-input
               id="input-password"
@@ -90,7 +90,7 @@
             v-slot="{ errors }"
             name="confirm"
             type="password"
-            rules="required|min:6"
+            rules="required|min:8"
           >
             <b-form-input
               id="input-con-password"
@@ -131,7 +131,10 @@
           </div>
         </b-form-group>
 
-        <b-button type="submit" block variant="outline-secondary mt-4" :disabled="!button_loaded">Register</b-button>
+        <b-button type="submit" block variant="outline-secondary mt-4 button-form-auth" :disabled="!button_loaded">
+          <b-icon icon="person-plus-fill" aria-hidden="true"></b-icon>
+          Register
+        </b-button>
       </b-form>
       <div class="text-center mt-2">
         <b-link href="/auth/login" class="text-secondary">Go to login.</b-link>
@@ -142,7 +145,6 @@
 
 <script>
 import axios from 'axios';
-import Noty from 'noty';
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 import { Fragment } from 'vue-fragment';
 
@@ -170,40 +172,33 @@ export default {
       this.readFileBase64(reader, e.target.files[0], 'profile', 'profile');
     },
     handleSubmit() {
+      const vm = this;
       this.$set(this, 'button_loaded', false);
       this.$refs.form.validate()
         .then(async success => {
           if (!success) {
-            new Noty({
-              text: 'Invild data!',
-              type: 'error',
-              timeout: 2000
-            }).show();
+            vm.alertNoty('Invild data!', 'error');
             return false;
           }
 
-          await axios.post(`${process.env.API_URL}/register`, this.form)
-            .then(({ data: { success: suc, message, field } }) => {
-              if (!suc) {
-                new Noty({
-                  text: message ? message : 'Registration failed!',
-                  type: 'error',
-                  timeout: 2000
-                }).show();
-                this.$refs.form.setErrors(field);
-                return false;
-              }
-
-              new Noty({
-                text: 'Success register',
-                type: 'success',
-                timeout: 2000
-              }).show();
+          await axios.post(`${process.env.API_URL}/register`, vm.form)
+            .then(({ data: { message } }) => {
+              vm.alertNoty(message);
               setTimeout(() => window.location.href = '/auth/login', 2000);
-              this.form = {};
-              this.$nextTick(() => this.$refs.form.reset());
+              vm.form = {};
+              vm.$nextTick(() => vm.$refs.form.reset());
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+              if (err.response) {
+                const { message, errors } = err.response.data;
+                if (errors && errors.length) {
+                  vm.$refs.form.setErrors(errors);
+                }
+                vm.alertNoty(message, 'error');
+              }
+            });
+
+          vm.$set(vm, 'button_loaded', true);
         });
     }
   },

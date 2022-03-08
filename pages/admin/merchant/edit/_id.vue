@@ -1,8 +1,7 @@
 <template>
   <fragment>
-    <!-- <h4 class="title mb-4 text-uppercase font-weight-bold">Create User</h4> -->
     <ValidationObserver ref="form">
-      <b-form @submit.prevent="handleCreate" enctype="multipart/form-data">
+      <b-form @submit.prevent="handleSubmit">
         <b-row>
           <b-col md="6">
             <b-form-group
@@ -34,6 +33,32 @@
 
           <b-col md="6">
             <b-form-group
+              id="input-group-branch"
+              label="Branch"
+              label-for="input-branch"
+            >
+              <ValidationProvider
+                v-slot="{ errors }"
+                name="branch"
+                type="text"
+              >
+                <b-form-input
+                  id="input-branch"
+                  v-model="form.branch"
+                  type="text"
+                  placeholder="Enter branch"
+                  :class="errors.length ? 'border-danger' : ''"
+                >
+                </b-form-input>
+                <span v-if="errors.length" class="text-danger">
+                  {{ errors[0] }}
+                </span>
+              </ValidationProvider>
+            </b-form-group>
+          </b-col>
+
+          <b-col md="6">
+            <b-form-group
               id="input-group-email"
               label="Email"
               label-for="input-email"
@@ -42,13 +67,12 @@
                 v-slot="{ errors }"
                 name="email"
                 type="email"
-                rules="required|email"
+                rules="email"
               >
                 <b-form-input
                   id="input-email"
                   v-model="form.email"
                   type="email"
-                  required
                   placeholder="Enter email"
                   :class="errors.length ? 'border-danger' : ''"
                 >
@@ -62,22 +86,20 @@
 
           <b-col md="6">
             <b-form-group
-              id="input-group-password"
-              label="Password"
-              label-for="input-password"
+              id="input-group-phone"
+              label="Phone"
+              label-for="input-phone"
             >
               <ValidationProvider
                 v-slot="{ errors }"
-                name="password"
-                type="password"
-                rules="required|min:8|password:@confirm"
+                name="phone"
+                type="text"
               >
                 <b-form-input
-                  id="input-password"
-                  v-model="form.password"
-                  type="password"
-                  required
-                  placeholder="Enter password"
+                  id="input-phone"
+                  v-model="form.phone"
+                  type="text"
+                  placeholder="Enter phone"
                   :class="errors.length ? 'border-danger' : ''"
                 >
                 </b-form-input>
@@ -90,22 +112,20 @@
 
           <b-col md="6">
             <b-form-group
-              id="input-group-con-password"
-              label="Confirm Password"
-              label-for="input-con-password"
+              id="input-group-website"
+              label="Website"
+              label-for="input-website"
             >
               <ValidationProvider
                 v-slot="{ errors }"
-                name="confirm"
-                type="password"
-                rules="required|min:8"
+                name="website"
+                type="text"
               >
                 <b-form-input
-                  id="input-con-password"
-                  type="password"
-                  v-model="form.password_confirmation"
-                  required
-                  placeholder="Enter confirm password"
+                  id="input-website"
+                  v-model="form.website"
+                  type="text"
+                  placeholder="Enter website"
                   :class="errors.length ? 'border-danger' : ''"
                 >
                 </b-form-input>
@@ -118,30 +138,55 @@
 
           <b-col md="6">
             <b-form-group
-              id="input-group-profile"
-              label="Profile"
-              label-for="input-profile"
+              id="input-group-app"
+              label="App"
+              label-for="input-app"
             >
-              <b-form-file class="mb-3" id="input-profile" accept="image/jpeg, image/png" @change="handleUpload">
-                <template slot="file-name" slot-scope="{ names }">
-                  <b-badge variant="dark">{{ names[0] }}</b-badge>
-                  <b-badge v-if="names.length > 1" variant="dark" class="ml-1">
-                    + {{ names.length - 1 }} More files
-                  </b-badge>
-                </template>
-              </b-form-file>
-
-              <div class="w-100 text-center">
-                <b-avatar
-                  v-if="profile"
-                  :src="profile"
-                  size="10rem"
+              <ValidationProvider
+                v-slot="{ errors }"
+                name="app"
+                type="text"
+              >
+                <b-form-input
+                  id="input-app"
+                  v-model="form.app"
+                  type="text"
+                  placeholder="Enter app"
+                  :class="errors.length ? 'border-danger' : ''"
                 >
-                </b-avatar>
-              </div>
+                </b-form-input>
+                <span v-if="errors.length" class="text-danger">
+                  {{ errors[0] }}
+                </span>
+              </ValidationProvider>
             </b-form-group>
           </b-col>
 
+          <b-col>
+            <b-form-group
+              id="input-group-description"
+              label="Description"
+              label-for="input-description"
+            >
+              <ValidationProvider
+                v-slot="{ errors }"
+                name="description"
+                type="text"
+              >
+                <b-form-textarea
+                  id="input-description"
+                  v-model="form.description"
+                  type="text"
+                  placeholder="Enter description"
+                  :class="errors.length ? 'border-danger' : ''"
+                >
+                </b-form-textarea>
+                <span v-if="errors.length" class="text-danger">
+                  {{ errors[0] }}
+                </span>
+              </ValidationProvider>
+            </b-form-group>
+          </b-col>
         </b-row>
 
         <div class="text-left">
@@ -153,7 +198,7 @@
             </b-icon>
             Submit
           </b-button>
-          <b-link href="/admin/user" class="btn btn-outline-danger">
+          <b-link href="/admin/merchant" class="btn btn-outline-danger">
             <b-icon
               icon="x-circle"
               aria-hidden="true"
@@ -168,45 +213,43 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import { Fragment } from 'vue-fragment';
+import _ from 'lodash';
 import { ValidationObserver, ValidationProvider } from "vee-validate";
-import PasswordComponent from '@/components/PasswordComponent';
 
 export default {
   middleware: 'auth',
   components: {
     Fragment,
     ValidationObserver,
-    ValidationProvider,
-    PasswordComponent,
+    ValidationProvider
   },
   computed: {
     ...mapGetters({
       loggedInUser: 'loggedInUser',
-    }),
+      getMerchant: 'merchant/getMerchant',
+    })
   },
-  asyncData({ app }) {
+  async created() {
+    await this.showMerchant({ id: this.id, token: this.access_token });
+    this.$set(this, 'form', { ..._.omit(this.getMerchant, ['id']) });
+  },
+  async asyncData({ params: { id }, app }) {
     return {
+      id,
       access_token: app.$auth.getToken('local'),
-      form: {
-        is_disabled: false,
-      },
-      profile: '',
+      form: {},
       button_loaded: true,
-      redirect_url: '/admin/user'
     };
   },
   methods: {
     ...mapActions({
-      createUser: 'user/createUser'
+      updateMerchant: 'merchant/updateMerchant',
+      showMerchant: 'merchant/showMerchant',
     }),
-    handleCreate() {
-      this.createUser({ token: this.access_token, params: this.form, vue: this });
-    },
-    handleUpload(e) {
-      const reader = new FileReader();
-      this.readFileBase64(reader, e.target.files[0], 'profile', 'profile');
+    handleSubmit() {
+      this.updateMerchant({ id: this.id, token: this.access_token, params: this.form, vue: this });
     },
   },
 }

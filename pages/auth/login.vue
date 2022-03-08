@@ -1,6 +1,6 @@
 <template>
   <fragment>
-    <h2 class="text-center font-weight-bold text-secondary">Login</h2>
+    <h2 class="page-form-header-top">Login</h2>
     <validation-observer ref="form">
       <b-form @submit.prevent="handleSubmit">
         <b-form-group
@@ -37,7 +37,7 @@
             v-slot="{ errors }"
             name="password"
             type="password"
-            rules="required|min:6"
+            rules="required|min:8"
           >
             <b-form-input
               id="input-password"
@@ -53,7 +53,7 @@
             </span>
           </validation-provider>
         </b-form-group>
-        <b-button type="submit" block variant="outline-secondary mt-4" :disabled="loading">
+        <b-button type="submit" block variant="outline-secondary mt-4 button-form-auth" :disabled="loading">
           <b-spinner small type="grow" v-if="loading"></b-spinner>
           <b-icon icon="arrow-right-circle" aria-hidden="true" v-else></b-icon>
           Login
@@ -67,9 +67,9 @@
 </template>
 
 <script>
-import Noty from 'noty';
 import { ValidationObserver, ValidationProvider } from 'vee-validate';
 import { mapGetters } from 'vuex';
+
 export default {
   layout: 'auth',
   middleware: 'guest',
@@ -91,11 +91,7 @@ export default {
       this.$refs.form.validate()
         .then(async success => {
           if (!success) {
-            new Noty({
-              text: 'Invild data!',
-              type: 'error',
-              timeout: 2000
-            }).show();
+            this.alertNoty('Invild data!', 'error');
             return false;
           }
 
@@ -104,25 +100,17 @@ export default {
           await this.$auth.loginWith('local', { data: this.form })
             .then(({ status }) => {
               if (status === 200) {
-                new Noty({
-                  text: `Welcome user <b>${this.loggedInUser.name}</b>!`,
-                  type: 'success',
-                  timeout: 2000
-                }).show();
+                vm.alertNoty(`Welcome user <b>${this.loggedInUser.name}</b>!`);
               }
             })
             .catch(err => {
-              let message = 'Error!';
-              if (err.response.data && err.response.data.detail) {
-                vm.$refs.form.setErrors(err.response.data.detail);
-                message = err.response.data.detail;
+              if (err.response) {
+                const { message, errors } = err.response.data;
+                if (errors && errors.length) {
+                  vm.$refs.form.setErrors(errors);
+                }
+                vm.alertNoty(message, 'error');
               }
-
-              new Noty({
-                text: message,
-                type: 'error',
-                timeout: 2000
-              }).show();
             });
           this.$set(this, 'loading', false);
         });

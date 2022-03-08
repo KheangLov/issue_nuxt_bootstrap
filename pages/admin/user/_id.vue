@@ -1,57 +1,85 @@
 <template>
   <fragment>
-    <h4 class="title mb-4 text-uppercase">User Details</h4>
+    <!-- <h4 class="title mb-4 text-uppercase font-weight-bold">User Details</h4> -->
     <div class="content text-left">
       <div class="text-center mb-5">
         <div class="d-inline-block position-relative">
           <b-avatar
-            :src="entry.profile ? `${url}/${entry.profile}` : ''"
+            :src="entry.profile && entry.profile"
             size="8rem"
             class="mb-3"
-            :text="!entry.profile && `${entry.first_name[0]}${entry.last_name[0]}`"
+            :text="!entry.profile && `${entry.name[0]}${entry.name[1]}`"
           ></b-avatar>
           <b-badge
             class="position-absolute text-uppercase p-2"
-            :variant="!entry.disabled ? 'success' : 'danger'"
+            :variant="!entry.is_disabled ? 'success' : 'danger'"
             style="border-radius: 50%; bottom: 15%; right: 10%;"
           >
-            <span class="d-none">{{ !entry.disabled ? "active" : "inactive"}}</span>
+            <span class="d-none">{{ !entry.is_disabled ? "active" : "inactive"}}</span>
           </b-badge>
         </div>
       </div>
       <b-row>
-        <b-col md="4"></b-col>
-        <b-col md="4">
-          <p class="mb-3 text-muted d-flex justify-content-between">
+        <b-col md="3"></b-col>
+        <b-col md="6">
+          <p class="mb-3 d-flex justify-content-between">
             <strong class="mr-3">Username</strong>
             <span>
-              {{ entry.first_name }}
-              {{ entry.last_name }}
+              {{ entry.name }}
             </span>
           </p>
-          <p class="mb-3 text-muted d-flex justify-content-between">
+          <p class="mb-3 d-flex justify-content-between">
             <strong class="mr-3">Email</strong>
             <span>
               {{ entry.email }}
             </span>
           </p>
-          <p class="mb-3 text-muted d-flex justify-content-between">
-            <strong class="mr-3">Phone</strong>
+          <p class="mb-3 d-flex justify-content-between">
+            <strong class="mr-3">Created At</strong>
             <span>
-              {{ entry.phone }}
+              {{ formatDatetime(entry.created_at) }}
+            </span>
+          </p>
+          <p class="mb-3 d-flex justify-content-between">
+            <strong class="mr-3">Created By</strong>
+            <span>
+              {{ entry.created_by }}
+            </span>
+          </p>
+          <p class="mb-3 d-flex justify-content-between">
+            <strong class="mr-3">Updated At</strong>
+            <span>
+              {{ formatDatetime(entry.updated_at) }}
+            </span>
+          </p>
+          <p class="mb-3 d-flex justify-content-between">
+            <strong class="mr-3">Updated By</strong>
+            <span>
+              {{ entry.updated_by }}
+            </span>
+          </p>
+          <p class="mb-3 d-flex justify-content-between">
+            <strong class="mr-3">Deleted At</strong>
+            <span>
+              {{ formatDatetime(entry.deleted_at) }}
+            </span>
+          </p>
+          <p class="mb-3 d-flex justify-content-between">
+            <strong class="mr-3">Deleted By</strong>
+            <span>
+              {{ entry.deleted_by }}
             </span>
           </p>
         </b-col>
-        <b-col md="4"></b-col>
+        <b-col md="3"></b-col>
       </b-row>
     </div>
   </fragment>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { Fragment } from 'vue-fragment';
-import axios from 'axios';
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 
 export default {
@@ -62,24 +90,24 @@ export default {
     ValidationProvider
   },
   computed: {
-    ...mapGetters(['loggedInUser'])
+    ...mapGetters({
+      loggedInUser: 'loggedInUser',
+      entry: 'user/getUser',
+    }),
   },
-  async asyncData({ params, store }) {
-    const access_token = store.state.auth.user.access_token;
-    const reqInstance = axios.create({
-      headers: {
-        'Authorization': `Bearer ${access_token}`
-      }
-    });
-    const entry = await reqInstance.get(`${process.env.API_URL ? process.env.API_URL : 'https://fastapi-kheanglov.cloud.okteto.net'}/users/${params.id}`)
-      .then(val => val.data)
-      .catch(err => console.log(err));
-
+  asyncData({ params: { id }, app }) {
     return {
-      access_token,
-      entry,
-      url: process.env.API_URL ? process.env.API_URL : 'https://fastapi-kheanglov.cloud.okteto.net'
+      id,
+      access_token: app.$auth.getToken('local'),
     };
+  },
+  created() {
+    this.showUser({ id: this.id, token: this.access_token });
+  },
+  methods: {
+    ...mapActions({
+      showUser: 'user/showUser'
+    }),
   },
 }
 </script>

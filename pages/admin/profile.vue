@@ -1,6 +1,5 @@
 <template>
   <fragment>
-    <h4 class="title mb-4 text-uppercase">My Profile</h4>
     <b-tabs content-class="mt-3">
       <b-tab title="Info" active>
         <ValidationObserver ref="form">
@@ -54,7 +53,7 @@
                       required
                       placeholder="Enter email"
                       :class="errors.length ? 'border-danger' : ''"
-                      disabled
+                      :disabled="loggedInUser.email == form.email"
                     >
                     </b-form-input>
                     <span v-if="errors.length" class="text-danger">
@@ -92,8 +91,8 @@
 
             </b-row>
 
-            <div class="text-left mt-3">
-              <b-button type="submit" variant="primary" :disabled="!button_loaded">
+            <div class="text-left">
+              <b-button type="submit" variant="outline-primary" :disabled="!button_loaded" class="mr-2">
                 <b-icon
                   icon="arrow-right-square"
                   aria-hidden="true"
@@ -121,7 +120,7 @@
                     v-slot="{ errors }"
                     name="password"
                     type="password"
-                    rules="required|min:6|password:@confirm"
+                    rules="required|min:8|password:@confirm"
                   >
                     <b-form-input
                       id="input-password"
@@ -149,12 +148,12 @@
                     v-slot="{ errors }"
                     name="confirm"
                     type="password"
-                    rules="required|min:6"
+                    rules="required|min:8"
                   >
                     <b-form-input
                       id="input-con-password"
                       type="password"
-                      v-model="confimation"
+                      v-model="password_form.password_confirmation"
                       required
                       placeholder="Enter confirm password"
                       :class="errors.length ? 'border-danger' : ''"
@@ -169,8 +168,8 @@
 
             </b-row>
 
-            <div class="text-left mt-3">
-              <b-button type="submit" variant="primary" :disabled="!button_loaded">
+            <div class="text-left">
+              <b-button type="submit" variant="outline-primary" :disabled="!button_loaded" class="mr-2">
                 <b-icon
                   icon="arrow-right-square"
                   aria-hidden="true"
@@ -187,10 +186,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import { Fragment } from 'vue-fragment';
-import axios from 'axios';
-import Noty from 'noty';
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 
 export default {
@@ -203,111 +200,32 @@ export default {
   computed: {
     ...mapGetters(['loggedInUser'])
   },
-  async asyncData({ store }) {
-    const access_token = store.state.auth.user.access_token;
-    console.log(store.state.auth.user);
-    const url = process.env.API_URL;
+  async asyncData({ store, app }) {
+    const { user: { id, name, email, profile } } = store.state.auth;
     return {
-      access_token,
-      form: {
-        ...store.state.auth.user,
-      },
+      id,
+      access_token: app.$auth.getToken('local'),
+      form: { name, email, profile },
       password_form: {},
-      confimation: '',
-      profile: `${url}/${store.state.auth.user.profile}`,
+      profile,
       button_loaded: true,
-      url
     };
   },
   methods: {
+    ...mapActions({
+      updateUser: 'user/updateUser',
+      showUser: 'user/showUser',
+    }),
     handleUpload(e) {
       const reader = new FileReader();
       this.readFileBase64(reader, e.target.files[0], 'profile', 'profile');
     },
     handleSubmit() {
-      const vm = this;
-      this.$set(this, 'button_loaded', false);
-      this.$refs.form.validate()
-        .then(async success => {
-          if (!success) {
-            new Noty({
-              text: 'Invild data!',
-              type: 'error',
-              timeout: 2000
-            }).show();
-            this.$set(this, 'button_loaded', true);
-            return false;
-          }
-
-          const reqInstance = axios.create({
-            headers: {
-              'Authorization': `Bearer ${vm.access_token}`
-            }
-          });
-
-          await reqInstance.put(`${process.env.API_URL}/users/${vm.loggedInUser.id}`, this.form)
-            .then(val => {
-              const { data: { success: suc } } = val;
-              if (suc) {
-                new Noty({
-                  text: 'Success update',
-                  type: suc ? 'success' : 'error',
-                  timeout: 2000
-                }).show();
-              }
-            })
-            .catch(err => {
-              new Noty({
-                text: "We've got some error during request",
-                type: 'error',
-                timeout: 2000
-              }).show();
-            });
-          this.$set(this, 'button_loaded', true);
-        });
+      this.updateUser({ id: this.id, token: this.access_token, params: this.form, vue: this });
     },
     handleChangePassword() {
-      const vm = this;
-      this.$set(this, 'button_loaded', false);
-      this.$refs.password_form.validate()
-        .then(async success => {
-          if (!success) {
-            new Noty({
-              text: 'Invild data!',
-              type: 'error',
-              timeout: 2000
-            }).show();
-            return false;
-          }
-
-          const reqInstance = axios.create({
-            headers: {
-              'Authorization': `Bearer ${vm.access_token}`
-            }
-          });
-
-          await reqInstance.put(`${process.env.API_URL}/change_password/${vm.$route.params.id}`, this.password_form)
-            .then(({ status }) => {
-              if (status === 200) {
-                new Noty({
-                  text: 'Success change password',
-                  type: 'success',
-                  timeout: 2000
-                }).show();
-              }
-            })
-            .catch(err => {
-              new Noty({
-                text: "We've got some error during request",
-                type: 'error',
-                timeout: 2000
-              }).show();
-              this.$set(this, 'button_loaded', true);
-            });
-
-          this.$nextTick(() => this.$refs.form.reset());
-        });
-    },
+      this.updateUser({ id: this.id, token: this.access_token, params: this.password_form, vue: this });
+    }
   },
 }
 </script>

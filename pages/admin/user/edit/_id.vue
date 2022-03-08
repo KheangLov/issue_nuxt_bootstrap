@@ -1,6 +1,5 @@
 <template>
   <fragment>
-    <h4 class="title mb-4 text-uppercase">Edit User</h4>
     <b-tabs content-class="mt-3">
       <b-tab title="Info" active>
         <ValidationObserver ref="form">
@@ -9,50 +8,22 @@
 
               <b-col md="6">
                 <b-form-group
-                  id="input-group-firstname"
-                  label="Firstname"
-                  label-for="input-firstname"
+                  id="input-group-name"
+                  label="Name"
+                  label-for="input-name"
                 >
                   <ValidationProvider
                     v-slot="{ errors }"
-                    name="first_name"
+                    name="name"
                     type="text"
                     rules="required"
                   >
                     <b-form-input
-                      id="input-firstname"
-                      v-model="form.first_name"
+                      id="input-name"
+                      v-model="form.name"
                       type="text"
                       required
-                      placeholder="Enter firstname"
-                      :class="errors.length ? 'border-danger' : ''"
-                    >
-                    </b-form-input>
-                    <span v-if="errors.length" class="text-danger">
-                      {{ errors[0] }}
-                    </span>
-                  </ValidationProvider>
-                </b-form-group>
-              </b-col>
-
-              <b-col md="6">
-                <b-form-group
-                  id="input-group-lastname"
-                  label="Lastname"
-                  label-for="input-lastname"
-                >
-                  <ValidationProvider
-                    v-slot="{ errors }"
-                    name="last_name"
-                    type="text"
-                    rules="required"
-                  >
-                    <b-form-input
-                      id="input-lastname"
-                      v-model="form.last_name"
-                      type="text"
-                      required
-                      placeholder="Enter lastname"
+                      placeholder="Enter name"
                       :class="errors.length ? 'border-danger' : ''"
                     >
                     </b-form-input>
@@ -94,34 +65,6 @@
 
               <b-col md="6">
                 <b-form-group
-                  id="input-group-email"
-                  label="Phone"
-                  label-for="input-email"
-                >
-                  <ValidationProvider
-                    v-slot="{ errors }"
-                    name="phone"
-                    type="tel"
-                    rules="required"
-                  >
-                    <b-form-input
-                      id="input-phone"
-                      v-model="form.phone"
-                      type="tel"
-                      required
-                      placeholder="Enter phone"
-                      :class="errors.length ? 'border-danger' : ''"
-                    >
-                    </b-form-input>
-                    <span v-if="errors.length" class="text-danger">
-                      {{ errors[0] }}
-                    </span>
-                  </ValidationProvider>
-                </b-form-group>
-              </b-col>
-
-              <b-col md="6">
-                <b-form-group
                   id="input-group-profile"
                   label="Profile"
                   label-for="input-profile"
@@ -148,8 +91,8 @@
 
             </b-row>
 
-            <div class="text-left mt-3">
-              <b-button type="submit" variant="primary" :disabled="!button_loaded">
+            <div class="text-left">
+              <b-button type="submit" variant="outline-primary" :disabled="!button_loaded" class="mr-2">
                 <b-icon
                   icon="arrow-right-square"
                   aria-hidden="true"
@@ -157,7 +100,7 @@
                 </b-icon>
                 Submit
               </b-button>
-              <b-link href="/admin/user" class="btn btn-danger">
+              <b-link href="/admin/user" class="btn btn-outline-danger">
                 <b-icon
                   icon="x-circle"
                   aria-hidden="true"
@@ -185,7 +128,7 @@
                     v-slot="{ errors }"
                     name="password"
                     type="password"
-                    rules="required|min:6|password:@confirm"
+                    rules="required|min:8|password:@confirm"
                   >
                     <b-form-input
                       id="input-password"
@@ -213,12 +156,12 @@
                     v-slot="{ errors }"
                     name="confirm"
                     type="password"
-                    rules="required|min:6"
+                    rules="required|min:8"
                   >
                     <b-form-input
                       id="input-con-password"
                       type="password"
-                      v-model="confimation"
+                      v-model="password_form.password_confirmation"
                       required
                       placeholder="Enter confirm password"
                       :class="errors.length ? 'border-danger' : ''"
@@ -233,8 +176,8 @@
 
             </b-row>
 
-            <div class="text-left mt-3">
-              <b-button type="submit" variant="primary" :disabled="!button_loaded">
+            <div class="text-left">
+              <b-button type="submit" variant="outline-primary" :disabled="!button_loaded" class="mr-2">
                 <b-icon
                   icon="arrow-right-square"
                   aria-hidden="true"
@@ -242,7 +185,7 @@
                 </b-icon>
                 Submit
               </b-button>
-              <b-link href="/admin/user" class="btn btn-danger">
+              <b-link href="/admin/user" class="btn btn-outline-danger">
                 <b-icon
                   icon="x-circle"
                   aria-hidden="true"
@@ -259,10 +202,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import { Fragment } from 'vue-fragment';
-import axios from 'axios';
-import Noty from 'noty';
+import _ from 'lodash';
 import { ValidationObserver, ValidationProvider } from "vee-validate";
 
 export default {
@@ -273,126 +215,43 @@ export default {
     ValidationProvider
   },
   computed: {
-    ...mapGetters(['loggedInUser'])
+    ...mapGetters({
+      loggedInUser: 'loggedInUser',
+      getUser: 'user/getUser',
+    })
   },
-  async asyncData({ params, store }) {
-    const access_token = store.state.auth.user.access_token;
-    const reqInstance = axios.create({
-      headers: {
-        'Authorization': `Bearer ${access_token}`
-      }
-    });
-
-    const form = await reqInstance.get(`${process.env.API_URL ? process.env.API_URL : 'https://fastapi-kheanglov.cloud.okteto.net'}/users/${params.id}`)
-      .then(val => val.data)
-      .catch(err => console.log(err));
-
-    const url = process.env.API_URL ? process.env.API_URL : 'https://fastapi-kheanglov.cloud.okteto.net';
+  async created() {
+    await this.showUser({ id: this.id, token: this.access_token });
+    this.$set(this, 'profile', this.getUser.profile);
+    this.$set(this, 'form', { ..._.pick(this.getUser, [
+      'name',
+      'email',
+    ]) });
+  },
+  async asyncData({ params: { id }, app }) {
     return {
-      access_token,
-      form: {
-        ...form,
-      },
+      id,
+      access_token: app.$auth.getToken('local'),
+      form: {},
       password_form: {},
-      confimation: '',
-      profile: `${url}/${form.profile}`,
+      profile: '',
       button_loaded: true,
-      url
     };
   },
   methods: {
+    ...mapActions({
+      updateUser: 'user/updateUser',
+      showUser: 'user/showUser',
+    }),
     handleUpload(e) {
       const reader = new FileReader();
       this.readFileBase64(reader, e.target.files[0], 'profile', 'profile');
     },
     handleSubmit() {
-      const vm = this;
-      this.$set(this, 'button_loaded', false);
-      this.$refs.form.validate()
-        .then(async success => {
-          if (!success) {
-            new Noty({
-              text: 'Invalid form input!',
-              type: 'error',
-              timeout: 2000
-            }).show();
-            this.$set(this, 'button_loaded', true);
-            return false;
-          }
-
-          const reqInstance = axios.create({
-            headers: {
-              'Authorization': `Bearer ${vm.access_token}`
-            }
-          });
-
-          await reqInstance.put(`${process.env.API_URL ? process.env.API_URL : 'https://fastapi-kheanglov.cloud.okteto.net'}/users/${vm.$route.params.id}`, this.form)
-            .then(val => {
-              const { data: { success: suc } } = val;
-              if (suc) {
-                new Noty({
-                  text: 'Success update',
-                  type: suc ? 'success' : 'error',
-                  timeout: 2000
-                }).show();
-                setTimeout(() => window.location.href = '/admin/user', 2000);
-              }
-            })
-            .catch(err => {
-              new Noty({
-                text: "We've got some error during request",
-                type: 'error',
-                timeout: 2000
-              }).show();
-              this.$set(this, 'button_loaded', true);
-            });
-
-          this.$nextTick(() => this.$refs.form.reset());
-        });
+      this.updateUser({ id: this.id, token: this.access_token, params: this.form, vue: this });
     },
     handleChangePassword() {
-      const vm = this;
-      this.$set(this, 'button_loaded', false);
-      this.$refs.password_form.validate()
-        .then(async success => {
-          if (!success) {
-            new Noty({
-              text: 'Invild data!',
-              type: 'error',
-              timeout: 2000
-            }).show();
-            return false;
-          }
-
-          const reqInstance = axios.create({
-            headers: {
-              'Authorization': `Bearer ${vm.access_token}`
-            }
-          });
-
-          await reqInstance.put(`${process.env.API_URL ? process.env.API_URL : 'https://fastapi-kheanglov.cloud.okteto.net'}/change_password/${vm.$route.params.id}`, this.password_form)
-            .then(({ status }) => {
-              if (status === 200) {
-                new Noty({
-                  text: 'Success change password',
-                  type: 'success',
-                  timeout: 2000
-                }).show();
-                setTimeout(() => window.location.href = '/admin/user', 2000);
-              }
-            })
-            .catch(err => {
-              console.log(err);
-              new Noty({
-                text: "We've got some error during request",
-                type: 'error',
-                timeout: 2000
-              }).show();
-              this.$set(this, 'button_loaded', true);
-            });
-
-          this.$nextTick(() => this.$refs.form.reset());
-        });
+      this.updateUser({ id: this.id, token: this.access_token, params: this.password_form, vue: this });
     }
   },
 }

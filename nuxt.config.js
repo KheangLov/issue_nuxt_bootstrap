@@ -37,7 +37,7 @@ export default {
   },
 
   axios: {
-    baseURL: process.env.API_URL ? process.env.API_URL : 'http://localhost:8000/api/v1',
+    baseURL: process.env.API_URL,
     credential: true,
   },
 
@@ -119,5 +119,9 @@ export default {
   bootstrapVue: {
     bootstrapCSS: false, // Or `css: false`
     bootstrapVueCSS: false // Or `bvCSS: false`
+  },
+
+  publicRuntimeConfig: {
+    baseURL: process.env.API_URL
   }
 }

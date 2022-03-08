@@ -5,52 +5,12 @@ import Noty from 'noty';
 
 const mixin = {
   methods: {
-    handleCreateUser() {
-      this.$set(this, 'button_loaded', false);
-      this.$refs.form.validate()
-        .then(async success => {
-          if (!success) {
-            new Noty({
-              text: 'Invalid form input!',
-              type: 'error',
-              timeout: 2000
-            }).show();
-            return false;
-          }
-
-          await axios.post(`${process.env.API_URL ? process.env.API_URL : 'https://fastapi-kheanglov.cloud.okteto.net'}/register`, this.form)
-            .then(({ data: { success: suc, message, field } }) => {
-              if (!suc) {
-                new Noty({
-                  text: message ? message : 'Create failed!',
-                  type: 'error',
-                  timeout: 2000
-                }).show();
-                this.$refs.form.setErrors(field);
-                this.$set(this, 'button_loaded', true);
-                return false;
-              }
-
-              new Noty({
-                text: 'Success create',
-                type: 'success',
-                timeout: 2000
-              }).show();
-              setTimeout(() => window.location.href = this.redirect_url, 2000);
-              this.form = {};
-              this.confimation = '';
-              this.$nextTick(() => this.$refs.form.reset());
-            })
-            .catch(err => {
-              console.log(err);
-              new Noty({
-                text: "We've got some error during request",
-                type: suc ? 'success' : 'error',
-                timeout: 2000
-              }).show();
-              this.$set(this, 'button_loaded', true);
-            });
-        });
+    alertNoty(text, type = 'success', timeout = 2000) {
+      new Noty({
+        text,
+        type,
+        timeout,
+      }).show();
     },
     readFileBase64(reader, file, field = '', form_field = '') {
       reader.readAsDataURL(file);

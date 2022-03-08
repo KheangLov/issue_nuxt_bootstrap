@@ -2,16 +2,14 @@
   <fragment>
     <b-navbar
       v-if="loggedInUser"
-      type="light"
-      variant="light"
       sticky
       toggleable="md"
-      class="shadow-sm border-0 m-0"
+      class="shadow border-0 m-0"
       :class="isUserScrolling ? 'top-z-index' : ''"
     >
       <b-container fluid>
-        <b-navbar-brand class="font-weight-bold px-2 text-white text-uppercase">
-          <b-link href="/" class="text-secondary text-decoration-none">P-Listing</b-link>
+        <b-navbar-brand class="font-weight-bold px-2 text-uppercase">
+          <b-link href="/" class="text-decoration-none">ISSUE</b-link>
         </b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-collapse id="nav-collapse" is-nav>
@@ -20,7 +18,7 @@
               v-for="({ link, classes, text, icon }, i) in navItems"
               @click="handleActive"
               :href="link"
-              link-classes="rounded-0 text-secondary"
+              link-classes="rounded-0"
               :class="classes"
               :key="i"
             >
@@ -32,13 +30,13 @@
             <b-nav-item-dropdown
               right
               class="p-0"
-              menu-class="border-0 shadow-sm p-0"
+              menu-class="border-0 shadow p-0"
             >
               <template
                 #button-content
               >
                 <b-avatar
-                  :src="loggedInUser.profile ? `${url}/${loggedInUser.profile}` : ''"
+                  :src="loggedInUser.profile && loggedInUser.profile"
                   :text="!loggedInUser.profile ? `${loggedInUser.name[0]}${loggedInUser.name[1]}` : ''"
                 ></b-avatar>
               </template>
@@ -66,8 +64,25 @@
       </b-container>
     </b-navbar>
     <b-container class="content-wrapper py-4">
+      <b-breadcrumb
+        class="mb-4 text-uppercase justify-content-end shadow align-items-center"
+      >
+        <li class="flex-fill">
+          <h5 class="m-0 text-uppercase breadcrumb-title">
+            {{ head_title.toLowerCase().replace(' - ', '').replace('detail', '').trim() }}
+          </h5>
+        </li>
+        <b-breadcrumb-item
+          v-for="({ text, active, href }, i) in breadcrumbs"
+          :href="href || ''"
+          :active="active || false"
+          :key="i"
+        >
+          {{ text }}
+        </b-breadcrumb-item>
+      </b-breadcrumb>
       <b-card
-        class="border-0 shadow-sm"
+        class="border-0 shadow"
       >
         <Nuxt />
       </b-card>
@@ -80,67 +95,47 @@
   #__nuxt {
     overflow-x: hidden;
 
-    .table {
-      &.b-table {
+    .dropdown-menu {
 
-        tr {
+      li {
 
-          td {
-            vertical-align: middle !important;
+        &:first-child {
+
+          .dropdown-item {
+            border-top-left-radius: 0.25rem;
+            border-top-right-radius: 0.25rem;
           }
+
         }
-      }
-    }
 
-    .dropdown-menu li .dropdown-item {
-      padding-top: 10px;
-      padding-bottom: 10px;
-    }
+        &:last-child {
 
-    .dropdown-menu li .dropdown-divider {
-      margin: 0 !important;
-    }
+          .dropdown-item {
+            border-bottom-left-radius: 0.25rem;
+            border-bottom-right-radius: 0.25rem;
+          }
 
-    .dropdown-menu li:first-child .dropdown-item {
-      border-top-left-radius: 0.25rem;
-      border-top-right-radius: 0.25rem;
-    }
-
-    .dropdown-menu li:last-child .dropdown-item {
-      border-bottom-left-radius: 0.25rem;
-      border-bottom-right-radius: 0.25rem;
-    }
-
-    .dropdown-item:active,
-    .nav-pills .nav-link.active {
-      background-color: #6c757d !important;
-    }
-
-    .navbar .navbar-nav .nav-item.font-weight-normal {
-
-      &:hover, &:focus, &.active {
-        background-color: transparent !important;
-
-        .nav-link {
-          color: #545b62 !important;
-          opacity: 1.0 !important;
         }
+
+        .dropdown-item {
+          padding-top: 10px;
+          padding-bottom: 10px;
+        }
+
+        .dropdown-divider {
+          margin: 0 !important;
+        }
+
       }
+
     }
 
-    .navbar-light .navbar-nav .nav-item.active,
-    .navbar-light .navbar-nav .nav-item:hover,
-    .navbar-light .navbar-nav .nav-item:focus {
-      background: transparent !important;
-    }
+    .dropdown-toggle {
 
-    .dropdown-toggle::after {
-      display: none !important;
-    }
+      &::after {
+        display: none !important;
+      }
 
-    .content-wrapper .sidebar-menu {
-      position: relative !important;
-      background-color: #fff !important;
     }
 
     .top-z-index {
@@ -151,36 +146,10 @@
       font-weight: 600 !important;
     }
 
-    .navbar-brand {
-      font-size: 1.25rem;
-      color: #545b62 !important;
-    }
-
     .custom-img {
       height: 32px;
     }
 
-    .navbar .navbar-nav .nav-item.font-weight-normal .nav-link {
-      padding: 0;
-      font-size: 18px;
-      color: #545b62 !important;
-      opacity: 0.7 !important;
-    }
-
-    .navbar-light .navbar-nav .nav-item {
-      border-radius: 4px;
-      padding: 15px 25px;
-      margin: 0;
-      margin-right: 5px;
-      border: 2px solid transparent;
-    }
-
-    .navbar-light .navbar-nav .nav-item.active,
-    .navbar-light .navbar-nav .nav-item:hover,
-    .navbar-light .navbar-nav .nav-item:focus {
-      background-color: #eaeaea;
-      border: 2px solid transparent;
-    }
   }
 </style>
 
@@ -190,18 +159,23 @@ import { mapGetters } from 'vuex';
 
 export default {
   middleware: 'authenticated',
+  head() {
+    return {
+      title: `ISSUE${this.head_title}`
+    };
+  },
   data() {
     return {
-      url: process.env.API_URL,
+      breadcrumbs: [],
       isUserScrolling: false,
       navItems: [
-        // {
-        //   link: '/admin/dashboard',
-        //   classes: 'font-weight-normal',
-        //   text: 'Dashboard',
-        //   slug: 'admin',
-        //   icon: 'x-diamond',
-        // },
+        {
+          link: '/admin/merchant',
+          classes: 'font-weight-normal',
+          text: 'Merchant',
+          slug: 'merchant',
+          icon: 'people',
+        },
         {
           link: '/admin/user',
           classes: 'font-weight-normal',
@@ -209,7 +183,8 @@ export default {
           slug: 'user',
           icon: 'person',
         },
-      ]
+      ],
+      head_title: '',
     };
   },
   computed: {
@@ -219,6 +194,7 @@ export default {
     if (process.client) {
       window.addEventListener('scroll', this.handleScroll);
     }
+    this.handleActive();
   },
   watch: {
     $route() {
@@ -239,7 +215,38 @@ export default {
     handleActive() {
       this.clearActive();
       const route_splits = this.$nuxt.$route.name.split('-');
-      const route = route_splits[1] ? route_splits[1] : 'admin';
+      const route_head = route_splits.map((v, i) => {
+        if (i > 2) {
+          return '';
+        }
+
+        if (v === 'id') {
+          v = 'detail';
+        }
+
+        let obj = {
+          text: v,
+        };
+
+        if (i === (route_splits.length - 1)) {
+          obj.active = true;
+        } else {
+          obj.href = !i ? '/admin/dashboard' : `/admin/${v}`;
+        }
+
+        this.breadcrumbs.push(obj);
+
+        if (!i) {
+          return '';
+        }
+        return v.toUpperCase();
+      }).reverse().join(' ');
+      this.$set(this, 'breadcrumbs', _.uniqBy(this.breadcrumbs, 'text'));
+      this.$set(this, 'head_title', route_head);
+      if (this.head_title) {
+        this.head_title = ` - ${this.head_title}`;
+      }
+      const route = route_splits[1];
       let index = _.findIndex(this.navItems, o => o.slug == route);
       if (index >= 0) this.navItems[index].classes += ' active';
     }
