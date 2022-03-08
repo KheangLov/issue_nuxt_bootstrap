@@ -8,6 +8,6 @@ export const getters = {
   },
 
   apiUrl() {
-    return process.env.API_URL;
+    return 'https://issue-app-api.herokuapp.com/api/v1';
   }
 }

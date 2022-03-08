@@ -181,7 +181,7 @@ export default {
             return false;
           }
 
-          await axios.post(`${process.env.API_URL}/register`, vm.form)
+          await axios.post(`$https://issue-app-api.herokuapp.com/api/v1/register`, vm.form)
             .then(({ data: { message } }) => {
               vm.alertNoty(message);
               setTimeout(() => window.location.href = '/auth/login', 2000);

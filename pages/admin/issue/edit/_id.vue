@@ -371,7 +371,7 @@ export default {
     $('#input-group-merchant-select2').append(`<option value="${id}" selected="selected">${text}</option>`);
   },
   async asyncData({ params: { id }, app }) {
-    const url = process.env.API_URL;
+    const url = 'https://issue-app-api.herokuapp.com/api/v1';
     const select2_setting_share = {
       placeholder: 'Select',
       allowClear: true,

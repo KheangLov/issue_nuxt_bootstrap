@@ -37,7 +37,7 @@ export default {
   },
 
   axios: {
-    baseURL: process.env.API_URL,
+    baseURL: 'https://issue-app-api.herokuapp.com/api/v1',
     credential: true,
   },
 
@@ -122,6 +122,6 @@ export default {
   },
 
   publicRuntimeConfig: {
-    baseURL: process.env.API_URL
+    baseURL: 'https://issue-app-api.herokuapp.com/api/v1'
   }
 }

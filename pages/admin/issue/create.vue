@@ -339,7 +339,7 @@ export default {
     },
   },
   asyncData({ app }) {
-    const url = process.env.API_URL;
+    const url = 'https://issue-app-api.herokuapp.com/api/v1';
     const select2_setting_share = {
       placeholder: 'Select',
       allowClear: true,

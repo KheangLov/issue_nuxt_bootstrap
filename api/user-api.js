@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = process.env.API_URL;
+const baseURL = 'https://issue-app-api.herokuapp.com/api/v1';
 const requestInstance = token => {
   return axios.create({
     headers: {
