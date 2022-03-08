@@ -1,10 +1,10 @@
 <template>
   <fragment>
     <div class="d-sm-flex justify-content-between">
-      <b-link href="/admin/merchant/create" class="btn btn-outline-secondary mb-3">
+      <b-link href="/admin/issue/create" class="btn btn-outline-secondary mb-3">
         <b-icon icon="person-plus" aria-hidden="true" class="mr-2"></b-icon>
         <span style="font-size: 18px;">
-          Add Merchant
+          Add Issue
         </span>
       </b-link>
 
@@ -31,6 +31,49 @@
       show-empty
       responsive
     >
+      <template #cell(merchant)="{ item: { merchant: { name, id } } }">
+        <b-link :href="`/admin/merchant/${id}`" class="btn btn-link p-0">
+          {{ name }}
+        </b-link>
+      </template>
+      <template #cell(issue_type)="{ item: { issue_type } }">
+        <b-badge
+          :variant="issue_type === 'bug' ? 'warning' : 'info'"
+          class="text-uppercase p-2 text-white"
+        >
+          {{ issue_type.replace('_', '') }}
+        </b-badge>
+      </template>
+      <template #cell(status)="{ item: { status } }">
+        <b-badge
+          v-if="status === 'resolved'"
+          variant="success"
+          class="text-uppercase p-2 text-white"
+        >
+          Resolved
+        </b-badge>
+        <b-badge
+          v-else
+          variant="danger"
+          class="text-uppercase p-2 text-white"
+        >
+          Issue
+        </b-badge>
+      </template>
+      <template #cell(api_type)="{ item: { api_type } }">
+        <b-badge
+          :variant="api_type === 'sandbox' ? 'light' : 'dark'"
+          class="text-uppercase p-2"
+        >
+          {{ api_type.replace('_', '') }}
+        </b-badge>
+      </template>
+      <template #cell(issued_at)="{ item: { issued_at } }">
+        {{ formatDatetime(issued_at) }}
+      </template>
+      <template #cell(resolved_at)="{ item: { resolved_at } }">
+        {{ formatDatetime(resolved_at) }}
+      </template>
       <template #cell(created_at)="{ item: { created_at } }">
         {{ formatDatetime(created_at) }}
       </template>
@@ -48,7 +91,7 @@
           v-if="!trashed"
           variant="link"
           class="text-secondary p-0 mr-2"
-          :href="`/admin/merchant/${id}`"
+          :href="`/admin/issue/${id}`"
           v-b-tooltip.hover
           title="View"
         >
@@ -58,7 +101,7 @@
           v-if="!trashed"
           variant="link"
           class="text-info p-0 mr-2"
-          :href="`/admin/merchant/edit/${id}`"
+          :href="`/admin/issue/edit/${id}`"
           v-b-tooltip.hover
           title="Edit"
         >
@@ -131,11 +174,13 @@ export default {
       access_token: app.$auth.getToken('local'),
       fields: [
         { key: 'name', label: 'Name', sortable: true, sortDirection: 'desc' },
-        { key: 'branch', label: 'Branch', sortable: true },
-        { key: 'email', label: 'Email', sortable: true },
-        { key: 'phone', label: 'Phone', sortable: true },
-        { key: 'website', label: 'Website', sortable: true },
-        { key: 'app', label: 'App', sortable: true },
+        { key: 'merchant', label: 'Merchant', sortable: true },
+        { key: 'issue_type', label: 'Issue Type', sortable: true },
+        { key: 'status', label: 'Status', sortable: true },
+        { key: 'api_type', label: 'API Type', sortable: true },
+        { key: 'resolution', label: 'Resolution', sortable: true },
+        { key: 'issued_at', label: 'Issued At', sortable: true },
+        { key: 'resolved_at', label: 'Resolved At', sortable: true },
         { key: 'created_at', label: 'Created At', sortable: true },
         { key: 'created_by', label: 'Created By', sortable: true },
         { key: 'updated_at', label: 'Updated At', sortable: true },
@@ -153,18 +198,18 @@ export default {
   },
   watch: {
     page(page) {
-      this.listMerchants({ token: this.access_token, params: { page } });
+      this.listIssues({ token: this.access_token, params: { page } });
     },
     trashed(trashed) {
-      this.listMerchants({ token: this.access_token, params: { trashed } });
+      this.listIssues({ token: this.access_token, params: { trashed } });
     }
   },
   computed: {
     ...mapGetters({
       loggedInUser: 'loggedInUser',
-      items: 'merchant/getMerchants',
-      total: 'merchant/getTotal',
-      pages: 'merchant/getPages',
+      items: 'issue/getIssues',
+      total: 'issue/getTotal',
+      pages: 'issue/getPages',
     }),
     page: {
       get() {
@@ -176,35 +221,35 @@ export default {
     }
   },
   created() {
-    this.listMerchants({ token: this.access_token });
+    this.listIssues({ token: this.access_token });
   },
   methods: {
     ...mapActions({
-      listMerchants: 'merchant/listMerchants',
-      disabledMerchant: 'merchant/disabledMerchant',
-      destroyMerchant: 'merchant/destroyMerchant',
-      restoreMerchant: 'merchant/restoreMerchant',
+      listIssues: 'issue/listIssues',
+      disabledIssue: 'issue/disabledIssue',
+      destroyIssue: 'issue/destroyIssue',
+      restoreIssue: 'issue/restoreIssue',
     }),
     linkGen(pageNum) {
       return {
-        path: '/admin/merchant',
+        path: '/admin/issue',
         query: { page: pageNum }
       }
     },
     handleDisabled(id) {
-      this.disabledMerchant({ id, token: this.access_token, vue: this });
+      this.disabledIssue({ id, token: this.access_token, vue: this });
     },
     handleRestore(id) {
-      this.restoreMerchant({ id, token: this.access_token, vue: this });
+      this.restoreIssue({ id, token: this.access_token, vue: this });
     },
     handleDelete(id, force_delete = false) {
       const vm = this;
       const dialog = new Noty({
-        text: 'Do you really want to delete this merchant?',
+        text: 'Do you really want to delete this issue?',
         type: 'error',
         buttons: [
           Noty.button('YES', 'btn btn-secondary', async () => {
-            await vm.destroyMerchant({ id, token: vm.access_token, params: { force_delete }, vue: vm });
+            await vm.destroyIssue({ id, token: vm.access_token, params: { force_delete }, vue: vm });
             dialog.close();
           }, { id: 'button1', 'data-status': 'ok' }),
           Noty.button('NO', 'btn btn-link text-white text-decoration-none', () => dialog.close())
@@ -218,7 +263,7 @@ export default {
         params.search = search;
       }
 
-      this.listMerchants({ token: this.access_token, params });
+      this.listIssues({ token: this.access_token, params });
     }
   },
 }

@@ -1,6 +1,5 @@
 <template>
   <fragment>
-    <!-- <h4 class="title mb-4 text-uppercase font-weight-bold">Create User</h4> -->
     <ValidationObserver ref="form">
       <b-form @submit.prevent="handleCreate" enctype="multipart/form-data">
         <b-row>
@@ -171,7 +170,6 @@
 import { mapActions, mapGetters } from 'vuex';
 import { Fragment } from 'vue-fragment';
 import { ValidationObserver, ValidationProvider } from "vee-validate";
-import PasswordComponent from '@/components/PasswordComponent';
 
 export default {
   middleware: 'auth',
@@ -179,7 +177,6 @@ export default {
     Fragment,
     ValidationObserver,
     ValidationProvider,
-    PasswordComponent,
   },
   computed: {
     ...mapGetters({

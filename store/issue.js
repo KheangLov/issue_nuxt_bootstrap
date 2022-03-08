@@ -1,34 +1,30 @@
-import { list, create, destroy, update, show, restore } from '~/api/merchant-api';
+import { list, create, destroy, update, show, restore } from '~/api/issue-api';
 import _ from 'lodash';
 
 export const state = () => ({
-  merchant: {},
-  merchants: [],
-  opt_merchants: [],
+  issue: {},
+  issues: [],
   page: 1,
   pages: 1,
   total: 0,
 });
 
 export const mutations = {
-  setMerchant(s, l) {
-    s.merchant = l;
+  setIssue(s, l) {
+    s.issue = l;
   },
-  setMerchants(s, l) {
-    s.merchants = l;
+  setIssues(s, l) {
+    s.issues = l;
   },
-  setSelect2Merchants(s, l) {
-    s.opt_merchants = l;
-  },
-  setEditMerchants(s, { id, updated_at, updated_by }) {
-    const index = _.findIndex(s.merchants, ['id', id]);
+  setEditIssues(s, { id, updated_at, updated_by }) {
+    const index = _.findIndex(s.issues, ['id', id]);
     if (index > -1) {
-      s.merchants[index].updated_at = updated_at;
-      s.merchants[index].updated_by = updated_by;
+      s.issues[index].updated_at = updated_at;
+      s.issues[index].updated_by = updated_by;
     }
   },
-  setDeleteMerchants(s, { id }) {
-    s.merchants = _.filter(s.merchants, o => o.id != id);
+  setDeleteIssues(s, { id }) {
+    s.issues = _.filter(s.issues, o => o.id != id);
   },
   setPages(s, l) {
     s.pages = l;
@@ -42,10 +38,10 @@ export const mutations = {
 };
 
 export const actions = {
-  listMerchants({ commit }, { token, params }) {
+  listIssues({ commit }, { token, params }) {
     return list(token, params)
       .then(({ data: { data, meta: { current_page, last_page, total } } }) => {
-        commit("setMerchants", data);
+        commit("setIssues", data);
         commit("setPages", last_page);
         commit("setPage", current_page);
         commit("setTotal", total);
@@ -53,21 +49,13 @@ export const actions = {
       .catch(err => console.error(err));
   },
 
-  select2Merchants({ commit }, { token, params }) {
-    return list(token, params)
-      .then(({ data: { data } }) => {
-        commit("setSelect2Merchants", data.map(({ id, name: text }) => ({ id, text })));
-      })
-      .catch(err => console.error(err));
-  },
-
-  showMerchant({ commit }, { id, token, params }) {
+  showIssue({ commit }, { id, token, params }) {
     return show(id, token, params)
-      .then(({ data: { data } }) => commit('setMerchant', data))
+      .then(({ data: { data } }) => commit('setIssue', data))
       .catch(err => console.error(err));
   },
 
-  async createMerchant({ commit }, { token, params, vue }) {
+  async createIssue({ commit }, { token, params, vue }) {
     vue.$set(vue, 'button_loaded', false);
     await vue.$refs.form.validate()
       .then(async success => {
@@ -81,7 +69,7 @@ export const actions = {
           .then(({ data: { message } }) => {
             vue.alertNoty(message);
             vue.$nextTick(() => vue.$refs.form.reset());
-            setTimeout(() => window.location.href = '/admin/merchant', 1000);
+            setTimeout(() => window.location.href = '/admin/issue', 1000);
           })
           .catch(err => {
             if (err.response) {
@@ -96,7 +84,7 @@ export const actions = {
       });
   },
 
-  async updateMerchant({ commit }, { id, token, params, vue }) {
+  async updateIssue({ commit }, { id, token, params, vue }) {
     vue.$set(vue, 'button_loaded', false);
     await vue.$refs.form.validate()
       .then(async success => {
@@ -110,7 +98,7 @@ export const actions = {
           .then(({ data: { message } }) => {
             vue.alertNoty(message);
             vue.$nextTick(() => vue.$refs.form.reset());
-            setTimeout(() => window.location.href = '/admin/merchant', 1000);
+            setTimeout(() => window.location.href = '/admin/issue', 1000);
           })
           .catch(err => {
             if (err.response) {
@@ -125,11 +113,11 @@ export const actions = {
       });
   },
 
-  destroyMerchant({ commit }, { id, token, params, vue }) {
+  destroyIssue({ commit }, { id, token, params, vue }) {
     return destroy(id, token, params)
       .then(({ data: { message } }) => {
         vue.alertNoty(message);
-        commit('setDeleteMerchants', { id });
+        commit('setDeleteIssues', { id });
       })
       .catch(err => {
         if (err.response) {
@@ -139,11 +127,11 @@ export const actions = {
       });
   },
 
-  restoreMerchant({ commit }, { id, token, params, vue }) {
+  restoreIssue({ commit }, { id, token, params, vue }) {
     return restore(id, token, params)
       .then(({ data: { message } }) => {
         vue.alertNoty(message);
-        commit('setDeleteMerchants', { id });
+        commit('setDeleteIssues', { id });
       })
       .catch(err => {
         if (err.response) {
@@ -155,14 +143,11 @@ export const actions = {
 };
 
 export const getters = {
-  getMerchant(s) {
-    return s.merchant;
+  getIssue(s) {
+    return s.issue;
   },
-  getMerchants(s) {
-    return s.merchants;
-  },
-  getSelect2Merchants(s) {
-    return s.opt_merchants;
+  getIssues(s) {
+    return s.issues;
   },
   getPage(s) {
     return s.page;

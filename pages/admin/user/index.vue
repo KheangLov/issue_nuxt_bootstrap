@@ -192,9 +192,16 @@ export default {
       loggedInUser: 'loggedInUser',
       items: 'user/getUsers',
       total: 'user/getTotal',
-      page: 'user/getPage',
       pages: 'user/getPages',
-    })
+    }),
+    page: {
+      get() {
+        return this.$store.state.merchant.page;
+      },
+      set(val) {
+        this.$store.commit('merchant/setPage', val);
+      }
+    }
   },
   created() {
     this.listUsers({ token: this.access_token });

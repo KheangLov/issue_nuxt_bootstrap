@@ -2,6 +2,8 @@
   <fragment>
     <b-navbar
       v-if="loggedInUser"
+      type="dark"
+      variant="dark"
       sticky
       toggleable="md"
       class="shadow border-0 m-0"
@@ -169,6 +171,13 @@ export default {
       breadcrumbs: [],
       isUserScrolling: false,
       navItems: [
+        {
+          link: '/admin/issue',
+          classes: 'font-weight-normal',
+          text: 'Issue',
+          slug: 'issue',
+          icon: 'question-square',
+        },
         {
           link: '/admin/merchant',
           classes: 'font-weight-normal',

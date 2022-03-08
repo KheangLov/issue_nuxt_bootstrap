@@ -19,6 +19,30 @@
               {{ entry[key] }}
             </span>
           </p>
+          <p
+            class="mb-3 d-flex justify-content-between"
+          >
+            <strong class="mr-3 text-capitalize">
+              Merchant
+            </strong>
+            <span v-if="issue.merchant">
+              <b-link
+                :href="`/admin/merchant/${issue.merchant.id}`"
+                class="btn btn-link p-0"
+              >
+                {{ issue.merchant.name }}
+              </b-link>
+            </span>
+          </p>
+          <div class="mb-3">
+            <strong class="mr-3 text-capitalize">
+              Description
+            </strong>
+            <div>
+              <p v-html="issue.description">
+              </p>
+            </div>
+          </div>
         </b-col>
         <b-col md="3"></b-col>
       </b-row>
@@ -42,10 +66,10 @@ export default {
   computed: {
     ...mapGetters({
       loggedInUser: 'loggedInUser',
-      merchant: 'merchant/getMerchant',
+      issue: 'issue/getIssue',
     }),
     entry() {
-      return _.omit(this.merchant, ['id']);
+      return _.omit(this.issue, ['id', 'description', 'merchant']);
     },
   },
   asyncData({ params: { id }, app }) {
@@ -54,12 +78,12 @@ export default {
       access_token: app.$auth.getToken('local'),
     };
   },
-  created() {
-    this.showMerchant({ id: this.id, token: this.access_token });
+  async created() {
+    await this.showIssue({ id: this.id, token: this.access_token });
   },
   methods: {
     ...mapActions({
-      showMerchant: 'merchant/showMerchant'
+      showIssue: 'issue/showIssue'
     }),
   },
 }

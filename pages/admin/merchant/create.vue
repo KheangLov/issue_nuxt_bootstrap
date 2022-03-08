@@ -216,7 +216,6 @@
 import { mapActions, mapGetters } from 'vuex';
 import { Fragment } from 'vue-fragment';
 import { ValidationObserver, ValidationProvider } from "vee-validate";
-import PasswordComponent from '@/components/PasswordComponent';
 
 export default {
   middleware: 'auth',
@@ -224,7 +223,6 @@ export default {
     Fragment,
     ValidationObserver,
     ValidationProvider,
-    PasswordComponent,
   },
   computed: {
     ...mapGetters({
@@ -234,9 +232,7 @@ export default {
   asyncData({ app }) {
     return {
       access_token: app.$auth.getToken('local'),
-      form: {
-        is_disabled: false,
-      },
+      form: {},
       button_loaded: true,
       redirect_url: '/admin/merchant'
     };

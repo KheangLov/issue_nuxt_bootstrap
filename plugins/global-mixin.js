@@ -30,9 +30,15 @@ const mixin = {
       return str.toString().padStart(len, prefix);
     },
     formatNumber(val, option = {}) {
+      if (val == 'N/A') {
+        return val;
+      }
       return new Intl.NumberFormat('en-US', option).format(val);
     },
     formatDatetime(val) {
+      if (val == 'N/A') {
+        return val;
+      }
       return moment(moment.utc(val)).local().format("dddd, MMMM Do YYYY, h:mm:ss A");
     },
     getAddressByLatLng(lat, lng) {

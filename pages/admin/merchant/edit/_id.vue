@@ -233,7 +233,15 @@ export default {
   },
   async created() {
     await this.showMerchant({ id: this.id, token: this.access_token });
-    this.$set(this, 'form', { ..._.omit(this.getMerchant, ['id']) });
+    this.$set(this, 'form', { ..._.omit(this.getMerchant, [
+      'id',
+      'created_by',
+      'created_at',
+      'updated_by',
+      'updated_at',
+      'deleted_by',
+      'deleted_at',
+    ]) });
   },
   async asyncData({ params: { id }, app }) {
     return {
