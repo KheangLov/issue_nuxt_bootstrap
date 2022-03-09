@@ -2,7 +2,7 @@
   <fragment>
     <h2 class="page-form-header-top">Register</h2>
     <ValidationObserver ref="form">
-      <b-form @submit.prevent="handleCreateUser">
+      <b-form @submit.prevent="handleSubmit">
         <b-form-group
           id="input-group-name"
           label="Name"
