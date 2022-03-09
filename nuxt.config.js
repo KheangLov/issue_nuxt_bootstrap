@@ -36,6 +36,17 @@ export default {
     fallback: true
   },
 
+  pwa: {
+    icon: {
+      source: './static/favicon.ico',
+      fileName: 'favicon.ico',
+    },
+    manifest: {
+      name: 'Issue',
+      lang: 'en',
+    }
+  },
+
   axios: {
     baseURL: 'https://issue-app-api.herokuapp.com/api/v1',
     credential: true,
@@ -89,6 +100,7 @@ export default {
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [
     '@nuxtjs/dotenv',
+    '@nuxtjs/pwa',
   ],
 
   module: {
