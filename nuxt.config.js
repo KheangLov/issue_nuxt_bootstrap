@@ -50,7 +50,10 @@ export default {
       name: 'Issue PWA',
       short_name: 'Issue',
       lang: 'en',
-      background_color: '#191d21'
+      background_color: '#191d21',
+    },
+    workbox: {
+      enabled: true,
     }
   },
 
