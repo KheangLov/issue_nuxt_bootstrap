@@ -84,7 +84,7 @@
           <b-col md="4">
             <b-form-group
               id="input-group-status"
-              label="Issued Type"
+              label="Status"
               label-for="input-status"
             >
               <ValidationProvider
@@ -109,7 +109,7 @@
           <b-col md="4">
             <b-form-group
               id="input-group-api-type"
-              label="Issued Type"
+              label="API Type"
               label-for="input-api-type"
             >
               <ValidationProvider

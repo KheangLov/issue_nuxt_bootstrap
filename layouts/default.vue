@@ -172,6 +172,13 @@ export default {
       isUserScrolling: false,
       navItems: [
         {
+          link: '/admin/dashboard',
+          classes: 'font-weight-normal',
+          text: 'Dashboard',
+          slug: 'dashboard',
+          icon: 'x-diamond',
+        },
+        {
           link: '/admin/issue',
           classes: 'font-weight-normal',
           text: 'Issue',

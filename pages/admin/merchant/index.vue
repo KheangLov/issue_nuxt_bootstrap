@@ -12,6 +12,7 @@
         <b-form-input
           id="filter-input"
           type="search"
+          class="mb-3"
           @change="handleSearch($event)"
           placeholder="Search..."
           style="width: 250px; height: 41px;"

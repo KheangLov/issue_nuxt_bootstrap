@@ -1,4 +1,4 @@
-import { list, create, destroy, update, show, restore } from '~/api/issue-api';
+import { list, create, destroy, update, show, restore, dashboard } from '~/api/issue-api';
 import _ from 'lodash';
 
 export const state = () => ({
@@ -7,6 +7,7 @@ export const state = () => ({
   page: 1,
   pages: 1,
   total: 0,
+  dashboard: []
 });
 
 export const mutations = {
@@ -35,6 +36,9 @@ export const mutations = {
   setTotal(s, l) {
     s.total = l;
   },
+  setDashboard(s, l) {
+    s.dashboard = l;
+  }
 };
 
 export const actions = {
@@ -140,6 +144,12 @@ export const actions = {
         }
       });
   },
+
+  dashboardIssue({ commit }, { token, params }) {
+    return dashboard(token, params)
+      .then(({ data }) => commit('setDashboard', data))
+      .catch(err => console.error(err));
+  },
 };
 
 export const getters = {
@@ -157,5 +167,8 @@ export const getters = {
   },
   getTotal(s) {
     return s.total;
+  },
+  getDashboard(s) {
+    return s.dashboard;
   },
 };

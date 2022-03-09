@@ -32,3 +32,7 @@ export const destroy = (id, token, params = {}) => {
 export const restore = (id, token, params = {}) => {
   return requestInstance(token).get(`${baseURL}/issues/restore/${id}`, { params });
 };
+
+export const dashboard = (token, params = {}) => {
+  return requestInstance(token).get(`${baseURL}/dashboard/issues/count`, { params });
+};
