@@ -37,6 +37,7 @@ export default {
   },
 
   pwa: {
+    dest: "public",
     icon: {
       source: './static/pwa_icon.png',
       fileName: 'pwa_icon.png',
@@ -58,6 +59,11 @@ export default {
       clientsClaim: true,
       register: true,
       cachingExtensions: '@/plugins/workbox-range-request.js',
+      preCaching: [
+        {
+          url: ''
+        }
+      ],
       runtimeCaching: [
         {
           urlPattern: 'https://fonts.googleapis.com/.*',
