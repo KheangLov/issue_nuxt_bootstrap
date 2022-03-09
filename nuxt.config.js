@@ -53,6 +53,7 @@ export default {
       lang: 'en',
       background_color: '#191d21',
       useWebmanifestExtension: true,
+      start_url: '/admin/dashboard?standalone=true',
     },
     workbox: {
       enabled: true,
