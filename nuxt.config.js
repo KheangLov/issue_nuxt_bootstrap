@@ -59,11 +59,6 @@ export default {
       clientsClaim: true,
       register: true,
       cachingExtensions: '@/plugins/workbox-range-request.js',
-      preCaching: [
-        {
-          url: 'https://issue-project.netlify.app/admin/dashboard'
-        }
-      ],
       runtimeCaching: [
         {
           urlPattern: 'https://fonts.googleapis.com/.*',
