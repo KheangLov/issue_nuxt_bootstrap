@@ -60,6 +60,7 @@ export default {
       autoRegister: true,
       clientsClaim: true,
       register: true,
+      cleanupOutdatedCaches: true,
       cachingExtensions: '@/plugins/workbox-sync.js',
       runtimeCaching: [
         {
