@@ -11,7 +11,7 @@
     >
       <b-container fluid>
         <b-navbar-brand class="font-weight-bold px-2 text-uppercase">
-          <b-link href="/" class="text-decoration-none">ISSUE</b-link>
+          <b-link href="/admin/dashboard" class="text-decoration-none">ISSUE</b-link>
         </b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-collapse id="nav-collapse" is-nav>
