@@ -61,7 +61,7 @@ export default {
       cachingExtensions: '@/plugins/workbox-range-request.js',
       preCaching: [
         {
-          url: ''
+          url: 'https://issue-project.netlify.app/admin/dashboard'
         }
       ],
       runtimeCaching: [
