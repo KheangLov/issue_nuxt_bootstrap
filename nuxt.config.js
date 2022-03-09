@@ -54,7 +54,10 @@ export default {
     },
     workbox: {
       enabled: true,
-      clientsClaim: false,
+      autoRegister: true,
+      clientsClaim: true,
+      register: true,
+      cachingExtensions: '@/plugins/workbox-range-request.js',
       runtimeCaching: [
         {
           urlPattern: 'https://fonts.googleapis.com/.*',

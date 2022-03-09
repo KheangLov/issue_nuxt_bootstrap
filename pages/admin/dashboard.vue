@@ -79,15 +79,8 @@
           <template #cell(updated_at)="{ item: { updated_at } }">
             {{ formatDatetime(updated_at) }}
           </template>
-          <template v-if="trashed" #cell(deleted_at)="{ item: { deleted_at } }">
-            {{ formatDatetime(deleted_at) }}
-          </template>
-          <template v-if="trashed" #cell(deleted_by)="{ item: { deleted_by } }">
-            {{ deleted_by }}
-          </template>
           <template #cell(actions)="{ item: { id } }">
             <b-button
-              v-if="!trashed"
               variant="link"
               class="text-secondary p-0 mr-2"
               :href="`/admin/issue/${id}`"
@@ -114,12 +107,6 @@
           </template>
           <template #cell(updated_at)="{ item: { updated_at } }">
             {{ formatDatetime(updated_at) }}
-          </template>
-          <template v-if="trashed" #cell(deleted_at)="{ item: { deleted_at } }">
-            {{ formatDatetime(deleted_at) }}
-          </template>
-          <template v-if="trashed" #cell(deleted_by)="{ item: { deleted_by } }">
-            {{ deleted_by }}
           </template>
           <template #cell(actions)="{ item: { id } }">
             <b-button
