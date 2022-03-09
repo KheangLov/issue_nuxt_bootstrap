@@ -1,0 +1,15 @@
+{
+  "name": "Issue PWA",
+  "short_name": "Issue",
+  "icons": [
+    {
+      "src": "/pwa_icon.png",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#191d21",
+  "background_color": "#191d21",
+  "start_url": "/admin/dashboard",
+  "display": "standalone",
+  "orientation": "portrait"
+}

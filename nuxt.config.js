@@ -52,6 +52,7 @@ export default {
       short_name: 'Issue',
       lang: 'en',
       background_color: '#191d21',
+      useWebmanifestExtension: true,
     },
     workbox: {
       enabled: true,
