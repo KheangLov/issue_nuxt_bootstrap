@@ -9,7 +9,7 @@
   ],
   "theme_color": "#191d21",
   "background_color": "#191d21",
-  "start_url": "/admin/dashboard",
+  "start_url": "/admin/dashboard?standalone=true",
   "display": "standalone",
   "orientation": "portrait"
 }
