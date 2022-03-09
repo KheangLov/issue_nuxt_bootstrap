@@ -118,7 +118,6 @@
 </template>
 
 <script>
-import Noty from 'noty';
 import { mapActions, mapGetters } from "vuex";
 import { Fragment } from 'vue-fragment';
 
@@ -183,7 +182,7 @@ export default {
     ...mapActions({
       listMerchants: 'merchant/listMerchants',
       disabledMerchant: 'merchant/disabledMerchant',
-      destroyMerchant: 'merchant/destroyMerchant',
+      destroy: 'merchant/destroyMerchant',
       restoreMerchant: 'merchant/restoreMerchant',
     }),
     linkGen(pageNum) {
@@ -192,26 +191,13 @@ export default {
         query: { page: pageNum }
       }
     },
-    handleDisabled(id) {
-      this.disabledMerchant({ id, token: this.access_token, vue: this });
-    },
     handleRestore(id) {
       this.restoreMerchant({ id, token: this.access_token, vue: this });
     },
     handleDelete(id, force_delete = false) {
-      const vm = this;
-      const dialog = new Noty({
-        text: 'Do you really want to delete this merchant?',
-        type: 'error',
-        buttons: [
-          Noty.button('YES', 'btn btn-secondary', async () => {
-            await vm.destroyMerchant({ id, token: vm.access_token, params: { force_delete }, vue: vm });
-            dialog.close();
-          }, { id: 'button1', 'data-status': 'ok' }),
-          Noty.button('NO', 'btn btn-link text-white text-decoration-none', () => dialog.close())
-        ]
-      });
-      dialog.show();
+      this.req_force_delete = force_delete;
+      this.req_id = id;
+      this.deletePopup(this);
     },
     async handleSearch(search) {
       let params = {};

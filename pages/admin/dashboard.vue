@@ -13,7 +13,7 @@
               </strong>
             </span>
             <span>
-              <strong>{{ count }}</strong>
+              <strong>{{ formatNumber(count) }}</strong>
             </span>
           </b-card-text>
         </b-card>
@@ -21,9 +21,17 @@
     </b-row>
     <b-row>
       <b-col md="6">
-        <h4 class="font-weight-bold mb-2 text-uppercase letter-spaceing">
-          Latest issues
-        </h4>
+        <div class="d-sm-flex justify-content-between">
+          <h4 class="font-weight-bold mb-2 text-uppercase letter-spaceing">
+            Latest issues
+          </h4>
+          <b-link
+            href="/admin/issue"
+            class="btn btn-link p-0 letter-spaceing text-uppercase"
+          >
+            View all
+          </b-link>
+        </div>
         <b-table
           class="text-truncate overflow-auto"
           :items="issues"
@@ -93,9 +101,17 @@
         </b-table>
       </b-col>
       <b-col md="6">
-        <h4 class="font-weight-bold mb-2 text-uppercase letter-spaceing">
-          Latest merchants
-        </h4>
+        <div class="d-sm-flex justify-content-between">
+          <h4 class="font-weight-bold mb-2 text-uppercase letter-spaceing">
+            Latest merchants
+          </h4>
+          <b-link
+            href="/admin/merchant"
+            class="btn btn-link p-0 letter-spaceing text-uppercase"
+          >
+            View all
+          </b-link>
+        </div>
         <b-table
           class="text-truncate overflow-auto"
           :items="merchants"

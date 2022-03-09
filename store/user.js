@@ -74,12 +74,7 @@ export const actions = {
           })
           .catch(err => {
             if (err.response) {
-              const { data: { errors, message } } = err.response;
-              if (errors && errors.length) {
-                vue.$refs.form.setErrors(errors);
-              }
-              vue.alertNoty(message, 'error');
-              vue.$set(vue, 'button_loaded', true);
+              vue.handleErrorMessage(vue, err.response);
             }
           });
       });
@@ -117,12 +112,7 @@ export const actions = {
           })
           .catch(err => {
             if (err.response) {
-              const { data: { errors, message } } = err.response;
-              if (errors && errors.length) {
-                vue.$refs.form.setErrors(errors);
-              }
-              vue.alertNoty(message, 'error');
-              vue.$set(vue, 'button_loaded', true);
+              vue.handleErrorMessage(vue, err.response);
             }
           });
       });

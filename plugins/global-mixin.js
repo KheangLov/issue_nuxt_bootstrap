@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import moment from 'moment';
-import axios from 'axios';
 import Noty from 'noty';
+import pluralize from 'pluralize';
+import _ from 'lodash';
 
 const mixin = {
   methods: {
@@ -11,6 +12,37 @@ const mixin = {
         type,
         timeout,
       }).show();
+    },
+    pluralizeAndCapitalize(text, plu = true, cap = true) {
+      if (!text) {
+        return text;
+      }
+      if (plu) {
+        text = pluralize(text);
+      }
+      if (cap) {
+        text = _.capitalize(text);
+      }
+      return text;
+    },
+    deletePopup(vue, text = 'Do you really want to delete this record?') {
+      const dialog = new Noty({
+        text,
+        type: 'error',
+        buttons: [
+          Noty.button('YES', 'btn btn-secondary', async () => {
+            await vue.destroy({
+              id: vue.req_id,
+              token: vue.access_token,
+              params: { force_delete: vue.req_force_delete },
+              vue
+            });
+            dialog.close();
+          }, { id: 'button1', 'data-status': 'ok' }),
+          Noty.button('NO', 'btn btn-link text-white text-decoration-none', () => dialog.close())
+        ]
+      });
+      dialog.show();
     },
     readFileBase64(reader, file, field = '', form_field = '') {
       reader.readAsDataURL(file);
@@ -25,6 +57,14 @@ const mixin = {
       reader.onerror = error => {
         console.log('Error: ', error);
       };
+    },
+    handleErrorMessage(vue, err) {
+      const { data: { errors, message } } = err;
+      if (errors && Object.keys(errors).length) {
+        vue.$refs.form.setErrors(errors);
+      }
+      vue.alertNoty(message, 'error');
+      vue.$set(vue, 'button_loaded', true);
     },
     paddString(str, len = 6, prefix = '0') {
       return str.toString().padStart(len, prefix);

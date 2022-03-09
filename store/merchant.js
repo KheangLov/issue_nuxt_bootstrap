@@ -29,6 +29,7 @@ export const mutations = {
   },
   setDeleteMerchants(s, { id }) {
     s.merchants = _.filter(s.merchants, o => o.id != id);
+    s.total = s.total - 1;
   },
   setPages(s, l) {
     s.pages = l;
@@ -85,12 +86,7 @@ export const actions = {
           })
           .catch(err => {
             if (err.response) {
-              const { data: { errors, message } } = err.response;
-              if (errors && errors.length) {
-                vue.$refs.form.setErrors(errors);
-              }
-              vue.alertNoty(message, 'error');
-              vue.$set(vue, 'button_loaded', true);
+              vue.handleErrorMessage(vue, err.response);
             }
           });
       });
@@ -114,12 +110,7 @@ export const actions = {
           })
           .catch(err => {
             if (err.response) {
-              const { data: { errors, message } } = err.response;
-              if (errors && errors.length) {
-                vue.$refs.form.setErrors(errors);
-              }
-              vue.alertNoty(message, 'error');
-              vue.$set(vue, 'button_loaded', true);
+              vue.handleErrorMessage(vue, err.response);
             }
           });
       });
