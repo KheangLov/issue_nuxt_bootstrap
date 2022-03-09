@@ -38,12 +38,19 @@ export default {
 
   pwa: {
     icon: {
-      source: './static/favicon.ico',
-      fileName: 'favicon.ico',
+      source: './static/pwa_icon.png',
+      fileName: 'pwa_icon.png',
+    },
+    meta: {
+      mobileAppIOS: true,
+      name: 'Issue',
+      author: 'kheang',
     },
     manifest: {
-      name: 'Issue',
+      name: 'Issue PWA',
+      short_name: 'Issue',
       lang: 'en',
+      background_color: '#191d21'
     }
   },
 
