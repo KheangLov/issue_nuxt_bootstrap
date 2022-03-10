@@ -1,94 +1,84 @@
 <template>
-  <fragment>
-    <!-- <h4 class="title mb-4 text-uppercase font-weight-bold">User Details</h4> -->
-    <div class="content text-left">
-      <div class="text-center mb-5">
-        <div class="d-inline-block position-relative">
-          <b-avatar
-            :src="entry.profile && entry.profile"
-            size="8rem"
-            class="mb-3"
-            :text="!entry.profile && `${entry.name[0]}${entry.name[1]}`"
-          ></b-avatar>
-          <b-badge
-            class="position-absolute text-uppercase p-2"
-            :variant="!entry.is_disabled ? 'success' : 'danger'"
-            style="border-radius: 50%; bottom: 15%; right: 10%;"
-          >
-            <span class="d-none">{{ !entry.is_disabled ? "active" : "inactive"}}</span>
-          </b-badge>
-        </div>
+  <div class="content text-left">
+    <div class="text-center mb-5">
+      <div class="d-inline-block position-relative">
+        <b-avatar
+          :src="entry.profile && entry.profile"
+          size="8rem"
+          class="mb-3"
+          :text="!entry.profile && entry.name ? `${entry.name[0]}${entry.name[1]}` : ''"
+        ></b-avatar>
+        <b-badge
+          class="position-absolute text-uppercase p-2"
+          :variant="!entry.is_disabled ? 'success' : 'danger'"
+          style="border-radius: 50%; bottom: 15%; right: 10%;"
+        >
+          <span class="d-none">{{ !entry.is_disabled ? "active" : "inactive"}}</span>
+        </b-badge>
       </div>
-      <b-row>
-        <b-col md="3"></b-col>
-        <b-col md="6">
-          <p class="mb-3 d-flex justify-content-between">
-            <strong class="mr-3">Username</strong>
-            <span>
-              {{ entry.name }}
-            </span>
-          </p>
-          <p class="mb-3 d-flex justify-content-between">
-            <strong class="mr-3">Email</strong>
-            <span>
-              {{ entry.email }}
-            </span>
-          </p>
-          <p class="mb-3 d-flex justify-content-between">
-            <strong class="mr-3">Created At</strong>
-            <span>
-              {{ formatDatetime(entry.created_at) }}
-            </span>
-          </p>
-          <p class="mb-3 d-flex justify-content-between">
-            <strong class="mr-3">Created By</strong>
-            <span>
-              {{ entry.created_by }}
-            </span>
-          </p>
-          <p class="mb-3 d-flex justify-content-between">
-            <strong class="mr-3">Updated At</strong>
-            <span>
-              {{ formatDatetime(entry.updated_at) }}
-            </span>
-          </p>
-          <p class="mb-3 d-flex justify-content-between">
-            <strong class="mr-3">Updated By</strong>
-            <span>
-              {{ entry.updated_by }}
-            </span>
-          </p>
-          <p class="mb-3 d-flex justify-content-between">
-            <strong class="mr-3">Deleted At</strong>
-            <span>
-              {{ formatDatetime(entry.deleted_at) }}
-            </span>
-          </p>
-          <p class="mb-3 d-flex justify-content-between">
-            <strong class="mr-3">Deleted By</strong>
-            <span>
-              {{ entry.deleted_by }}
-            </span>
-          </p>
-        </b-col>
-        <b-col md="3"></b-col>
-      </b-row>
     </div>
-  </fragment>
+    <b-row>
+      <b-col md="2"></b-col>
+      <b-col md="8">
+        <p class="mb-3 d-flex justify-content-between">
+          <strong class="mr-3">Username</strong>
+          <span>
+            {{ entry.name }}
+          </span>
+        </p>
+        <p class="mb-3 d-flex justify-content-between">
+          <strong class="mr-3">Email</strong>
+          <span>
+            {{ entry.email }}
+          </span>
+        </p>
+        <p class="mb-3 d-flex justify-content-between">
+          <strong class="mr-3">Created At</strong>
+          <span>
+            {{ formatDatetime(entry.created_at) }}
+          </span>
+        </p>
+        <p class="mb-3 d-flex justify-content-between">
+          <strong class="mr-3">Created By</strong>
+          <span>
+            {{ entry.created_by }}
+          </span>
+        </p>
+        <p class="mb-3 d-flex justify-content-between">
+          <strong class="mr-3">Updated At</strong>
+          <span>
+            {{ formatDatetime(entry.updated_at) }}
+          </span>
+        </p>
+        <p class="mb-3 d-flex justify-content-between">
+          <strong class="mr-3">Updated By</strong>
+          <span>
+            {{ entry.updated_by }}
+          </span>
+        </p>
+        <p class="mb-3 d-flex justify-content-between">
+          <strong class="mr-3">Deleted At</strong>
+          <span>
+            {{ formatDatetime(entry.deleted_at) }}
+          </span>
+        </p>
+        <p class="mb-3 d-flex justify-content-between">
+          <strong class="mr-3">Deleted By</strong>
+          <span>
+            {{ entry.deleted_by }}
+          </span>
+        </p>
+      </b-col>
+      <b-col md="2"></b-col>
+    </b-row>
+  </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { Fragment } from 'vue-fragment';
-import { ValidationObserver, ValidationProvider } from "vee-validate";
 
 export default {
   middleware: 'auth',
-  components: {
-    Fragment,
-    ValidationObserver,
-    ValidationProvider
-  },
   computed: {
     ...mapGetters({
       loggedInUser: 'loggedInUser',

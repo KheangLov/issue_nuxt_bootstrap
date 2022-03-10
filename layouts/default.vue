@@ -70,8 +70,12 @@
         class="mb-4 text-uppercase justify-content-end shadow align-items-center"
       >
         <li class="flex-fill">
-          <h5 class="m-0 text-uppercase breadcrumb-title">
-            {{ head_title.toLowerCase().replace(' - ', '').replace('detail', '').trim() }}
+          <h5
+            class="m-0 text-uppercase breadcrumb-title"
+            v-b-tooltip.hover
+            :title="breadcrumb_title"
+          >
+            {{ breadcrumb_title }}
           </h5>
         </li>
         <b-breadcrumb-item
@@ -204,7 +208,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['loggedInUser', 'isAuthenticated'])
+    ...mapGetters(['loggedInUser', 'isAuthenticated']),
+    breadcrumb_title() {
+      return _.capitalize(this.head_title.toLowerCase().replace(' - ', '').replace('detail', '').trim());
+    },
   },
   created() {
     if (process.client) {

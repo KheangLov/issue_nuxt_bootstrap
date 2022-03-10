@@ -33,7 +33,8 @@
           </b-link>
         </div>
         <b-table
-          class="text-truncate overflow-auto"
+          v-if="issues && issues.length"
+          class="text-truncate overflow-auto mb-3"
           :items="issues"
           :fields="issue_fields"
           responsive
@@ -99,6 +100,17 @@
             </b-button>
           </template>
         </b-table>
+        <div
+          v-else
+          class="text-center mt-2"
+        >
+          <b-spinner
+            style="width: 2rem; height: 2rem;"
+            label="Large Spinner"
+            type="grow"
+          >
+          </b-spinner>
+        </div>
       </b-col>
       <b-col md="6">
         <div class="d-sm-flex justify-content-between">
@@ -113,7 +125,8 @@
           </b-link>
         </div>
         <b-table
-          class="text-truncate overflow-auto"
+          v-if="merchants && merchants.length"
+          class="text-truncate overflow-auto mb-3"
           :items="merchants"
           :fields="merchant_fields"
           responsive
@@ -136,6 +149,17 @@
             </b-button>
           </template>
         </b-table>
+        <div
+          v-else
+          class="text-center mt-2"
+        >
+          <b-spinner
+            style="width: 2rem; height: 2rem;"
+            label="Large Spinner"
+            type="grow"
+          >
+          </b-spinner>
+        </div>
       </b-col>
     </b-row>
   </div>

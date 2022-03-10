@@ -8,10 +8,17 @@
       class="mr-2"
     >
       <b-icon
+        v-if="submit_obj.button_loaded"
         icon="arrow-right-square"
         aria-hidden="true"
       >
       </b-icon>
+      <b-spinner
+        v-else
+        small
+        type="grow"
+      >
+      </b-spinner>
       {{ submit_obj.text || 'Submit' }}
     </b-button>
     <b-link
